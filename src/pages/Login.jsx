@@ -1,42 +1,58 @@
-import styled from "styled-components";
-import CustomForm from "../components/form/Form";
-import { Input, SubmitButton } from "../components/form";
 import * as Yup from "yup";
 
-const StyledDiv = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-
-  & > .item {
-    width: 100%;
-    padding: 0 2rem;
-  }
-`;
+import { Button } from "react-bootstrap";
+import CustomForm from "../components/form/Form";
+import { Input } from "../components/form";
+import { Link } from "react-router-dom";
+import { LoginStyles } from "./styles";
+import firebase from "../service/firebase.utils";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
-  password: Yup.string().required().min(6).label("Password")
+  password: Yup.string()
+    .required()
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+    )
+    .label("Password")
 });
 
-const Login = () => {
-  const handleSubmit = (val) => {
-    console.log(val);
+const Login = ({ clearUser }) => {
+  const handleSubmit = async ({ email, password }, { resetForm }) => {
+    try {
+      const response = await firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      alert(e);
+    }
   };
   return (
-    <StyledDiv>
-      <div className="item">
-        <h1 className="text-center">Sign in</h1>
-        <CustomForm
-          initialValues={{ email: "", password: "" }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          <Input name="email" type="email" />
-          <Input name="password" type="password" />
-          <SubmitButton type="submit" title="Login" />
-        </CustomForm>
-      </div>
-    </StyledDiv>
+    <>
+      <Button variant="danger" onClick={clearUser}>
+        Logout
+      </Button>
+      <LoginStyles>
+        <div className="item">
+          <h1>Sign In</h1>
+          <CustomForm
+            initialValues={{ email: "", password: "" }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
+          >
+            <Input placeholder="Email" name="email" type="email" />
+            <Input placeholder="Password" name="password" type="password" />
+            <div className="submit-btn">
+              <Button type="submit">Login</Button>
+            </div>
+          </CustomForm>
+          <div className="redirect-link">
+            <Link to="/signup">Create an Account</Link>
+          </div>
+        </div>
+      </LoginStyles>
+    </>
   );
 };
 export default Login;
