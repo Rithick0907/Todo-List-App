@@ -1,17 +1,23 @@
-import Formik from "formik";
+import { Form } from "react-bootstrap";
+import { Formik } from "formik";
 
 const CustomForm = ({
   initialValues,
   validationSchema,
   onSubmit,
-  children
+  children,
 }) => (
   <Formik
     initialValues={initialValues}
     validationSchema={validationSchema}
     onSubmit={onSubmit}
   >
-    {() => <>{children}</>}
+    {({ handleSubmit }) => (
+      <Form noValidate onSubmit={handleSubmit}>
+        {/*noValidate attribute disable browser specific validation*/}
+        {children}
+      </Form>
+    )}
   </Formik>
 );
 
