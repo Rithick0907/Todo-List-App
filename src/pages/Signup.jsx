@@ -8,7 +8,6 @@ import { SignupStyles } from "./styles";
 import firebase from "../service/firebase.utils";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required().label("Name"),
   email: Yup.string().required().email().label("Email"),
   password: Yup.string()
     .required()
@@ -38,7 +37,6 @@ const Signup = () => {
         <h1>Sign Up</h1>
         <CustomForm
           initialValues={{
-            name: "",
             email: "",
             password: "",
             confirmPassword: "",
@@ -46,7 +44,6 @@ const Signup = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          <Input placeholder="Name" name="name" />
           <Input placeholder="Email" name="email" />
           <Input placeholder="Password" name="password" type="password" />
           <Input
