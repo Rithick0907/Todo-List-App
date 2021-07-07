@@ -6,6 +6,7 @@ const CustomForm = ({
   validationSchema,
   onSubmit,
   children,
+  ...otherAttributes
 }) => (
   <Formik
     initialValues={initialValues}
@@ -13,7 +14,7 @@ const CustomForm = ({
     onSubmit={onSubmit}
   >
     {({ handleSubmit }) => (
-      <Form noValidate onSubmit={handleSubmit}>
+      <Form noValidate onSubmit={handleSubmit} {...otherAttributes}>
         {/*noValidate attribute disable browser specific validation*/}
         {children}
       </Form>

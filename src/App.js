@@ -1,7 +1,9 @@
+import { Login, Main, Signup } from "./pages";
+import { Redirect, Route, Switch } from "react-router-dom";
 import firebase, { addUserToDB } from "./service/firebase.utils";
 import { useEffect, useState } from "react";
 
-import Routes from "./Routes";
+import UserContext from "./UserContext";
 import useHttp from "./hooks/useHttp";
 
 const App = () => {
@@ -20,7 +22,21 @@ const App = () => {
 
     return () => unSubscribe();
   }, []);
-  return <Routes currentUser={user} />;
+  return (
+    <UserContext.Provider value={user}>
+      <Switch>
+        <Route path="/signup" component={Signup} />
+        <Route path="/login" component={Login} />
+        <Route
+          path="/main"
+          render={(props) =>
+            user ? <Main {...props} /> : <Redirect to="login" />
+          }
+        />
+        <Redirect to="/login" />
+      </Switch>
+    </UserContext.Provider>
+  );
 };
 
 export default App;

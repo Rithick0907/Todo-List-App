@@ -1,9 +1,9 @@
 import * as Yup from "yup";
 
 import { CustomForm, Input } from "../components/form";
+import { Link, useHistory } from "react-router-dom";
 
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { SignupStyles } from "./styles";
 import { addUserToDB } from "../service/firebase.utils";
 import firebase from "../service/firebase.utils";
@@ -30,6 +30,7 @@ const validationSchema = Yup.object().shape({
 });
 const Signup = () => {
   const { sendRequest } = useHttp();
+  const history = useHistory();
 
   const handleSubmit = async (val, { resetForm }) => {
     try {
@@ -40,6 +41,7 @@ const Signup = () => {
         dob: val.dob,
         mobileNo: val.mobileNo,
       });
+      history.push("/main");
     } catch (e) {
       alert(e.message);
     }

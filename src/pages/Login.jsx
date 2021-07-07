@@ -1,9 +1,10 @@
 import * as Yup from "yup";
 
+import { Link, useHistory } from "react-router-dom";
+
 import { Button } from "react-bootstrap";
 import CustomForm from "../components/form/Form";
 import { Input } from "../components/form";
-import { Link } from "react-router-dom";
 import { LoginStyles } from "./styles";
 import firebase from "../service/firebase.utils";
 
@@ -19,11 +20,13 @@ const validationSchema = Yup.object().shape({
 });
 
 const Login = ({ clearUser }) => {
+  const history = useHistory();
   const handleSubmit = async ({ email, password }, { resetForm }) => {
     try {
       const response = await firebase
         .auth()
         .signInWithEmailAndPassword(email, password);
+      history.push("/main");
     } catch (e) {
       alert(e);
     }

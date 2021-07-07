@@ -1,51 +1,46 @@
-import styled from "styled-components";
+import * as Yup from "yup";
+
 import { Button, Form } from "react-bootstrap";
-import { useState } from "react";
+import { CustomForm, Input } from "./form";
+import { useContext, useState } from "react";
+
+import { StyledCard } from "./styles";
+import UserContext from "../UserContext";
+import { baseURL } from "../service/httpConfig";
 import useHttp from "../hooks/useHttp";
 
-const StyledCard = styled.div`
-  margin: 2rem 5rem 0 5rem;
-  box-shadow: 0 2px 8px gray;
-  border-radius: 10px;
-  padding: 1rem;
-
-  & > main {
-    margin: 10px 0;
-  }
-`;
-
+const validationSchema = Yup.object().shape({
+  task: Yup.string().required("Enter Task before adding"),
+});
 const Card = () => {
-  const [task, setTask] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const { id: userID } = useContext(UserContext);
   const { sendRequest } = useHttp();
+  const handleSubmit = ({ task }) => {
+    setTasks((prevTask) => {
+      prevTask.push(task);
+      sendRequest({
+        method: "POST",
+        url: `${baseURL}/users/${userID}/tasks.json`,
+        data: prevTask,
+      });
+      return prevTask;
+    });
+  };
   return (
     <StyledCard>
-      <header>
+      <CustomForm
+        className="item"
+        initialValues={{ task: "" }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
         <h2 className="text-center">Add Tasks</h2>
-      </header>
-      <main>
-        <Form.Control
-          onChange={(e) => setTask(e.currentTarget.value)}
-          type="text"
-          placeholder="Enter Your Task"
-        />
-      </main>
-      <footer className="text-center">
-        <Button
-          onClick={() =>
-            sendRequest({
-              url:
-                "https://practice-firebase-bd6f2-default-rtdb.firebaseio.com/tasks.json",
-              method: "POST",
-              data: { task, createdAt: new Date() },
-              headers: {
-                "Content-Type": "application/json"
-              }
-            })
-          }
-        >
-          Add
-        </Button>
-      </footer>
+        <Input className="mt-4" name="task" placeholder="Add Task" />
+        <div className="text-center mt-4">
+          <Button type="submit">Add</Button>
+        </div>
+      </CustomForm>
     </StyledCard>
   );
 };

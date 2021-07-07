@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Card from "../components/Card";
+import TaskList from "../components/TaskList";
+import UserContext from "../UserContext";
 import { baseURL } from "../service/httpConfig";
 import useHttp from "../hooks/useHttp";
 
 const Main = () => {
   const [tasks, setTasks] = useState([]);
+  const { id: userID } = useContext(UserContext);
   const { sendRequest } = useHttp();
 
   const applyTask = (data) => {
@@ -20,15 +23,21 @@ const Main = () => {
   };
 
   useEffect(() => {
-    sendRequest(
+    const data = sendRequest(
       {
         method: "GET",
-        url: baseURL + "tasks.json",
+        url: `${baseURL}/users/${userID}/tasks.json`,
       },
       applyTask
     );
+    console.log(data);
   }, [sendRequest]);
-  return <Card />;
+  return (
+    <>
+      <Card />
+      <TaskList tasks={tasks} />
+    </>
+  );
 };
 
 export default Main;
