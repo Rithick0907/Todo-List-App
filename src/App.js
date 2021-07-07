@@ -1,21 +1,26 @@
+import firebase, { addUserToDB } from "./service/firebase.utils";
 import { useEffect, useState } from "react";
 
 import Routes from "./Routes";
-import firebase from "./service/firebase.utils";
+import useHttp from "./hooks/useHttp";
 
 const App = () => {
   const [user, setUser] = useState("");
-  const clearUser = () => {
-    firebase.auth().signOut();
-  };
+
+  const { sendRequest } = useHttp();
+
   useEffect(() => {
-    const unSubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
+    const unSubscribe = firebase.auth().onAuthStateChanged(async (userAuth) => {
+      let currentUser = null;
+      if (userAuth) {
+        currentUser = await addUserToDB(sendRequest, userAuth);
+      }
+      setUser(currentUser);
     });
 
     return () => unSubscribe();
   }, []);
-  return <Routes clearUser={clearUser} currentUser={user} />;
+  return <Routes currentUser={user} />;
 };
 
 export default App;

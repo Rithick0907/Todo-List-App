@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
       "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
     )
-    .label("Password")
+    .label("Password"),
 });
 
 const Login = ({ clearUser }) => {
@@ -30,7 +30,7 @@ const Login = ({ clearUser }) => {
   };
   return (
     <>
-      <Button variant="danger" onClick={clearUser}>
+      <Button variant="danger" onClick={() => firebase.auth().signOut()}>
         Logout
       </Button>
       <LoginStyles>

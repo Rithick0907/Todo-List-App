@@ -5,10 +5,7 @@ const CustomRoute = ({ clearUser, currentUser }) => {
   return (
     <Switch>
       <Route path="/signup" component={Signup} />
-      <Route
-        path="/login"
-        render={(props) => <Login clearUser={clearUser} {...props} />}
-      />
+      <Route path="/login" component={Login} />
       <Route
         path="/main"
         render={(props) =>

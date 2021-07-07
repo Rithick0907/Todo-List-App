@@ -1,5 +1,6 @@
 import "firebase/auth";
 
+import { baseURL } from "./httpConfig";
 import firebase from "firebase/app";
 
 const firebaseConfig = {
@@ -11,7 +12,30 @@ const firebaseConfig = {
   messagingSenderId: "245874058198",
   appId: "1:245874058198:web:43ddac9e8dcb31110a7a77",
 };
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig); //If not initialized even once then initialize now
+} else {
+  firebase.app(); // if already initialized, use that one
+}
 
-firebase.initializeApp(firebaseConfig);
+export const addUserToDB = async (sendRequest, userAuth, additionalData) => {
+  if (userAuth) {
+    let response = await sendRequest({
+      url: `${baseURL}/users/${userAuth.uid}.json`,
+      method: "GET",
+    });
+    if (!response.data) {
+      const { displayName, email } = userAuth;
+      const createdAt = new Date();
+      const data = { displayName, email, createdAt, ...additionalData };
+      response = await sendRequest({
+        url: `${baseURL}/users/${userAuth.uid}.json`,
+        method: "PUT",
+        data,
+      });
+    }
+    return { id: userAuth.uid, ...response.data };
+  }
+};
 
 export default firebase;

@@ -5,7 +5,9 @@ import { CustomForm, Input } from "../components/form";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SignupStyles } from "./styles";
+import { addUserToDB } from "../service/firebase.utils";
 import firebase from "../service/firebase.utils";
+import useHttp from "../hooks/useHttp";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
@@ -27,13 +29,19 @@ const validationSchema = Yup.object().shape({
   ),
 });
 const Signup = () => {
+  const { sendRequest } = useHttp();
+
   const handleSubmit = async (val, { resetForm }) => {
     try {
-      const response = await firebase
+      const { user } = await firebase
         .auth()
         .createUserWithEmailAndPassword(val.email, val.password);
+      await addUserToDB(sendRequest, user, {
+        dob: val.dob,
+        mobileNo: val.mobileNo,
+      });
     } catch (e) {
-      alert("Something Went wrong");
+      alert(e.message);
     }
   };
   return (
