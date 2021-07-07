@@ -9,6 +9,11 @@ import firebase from "../service/firebase.utils";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
+  dob: Yup.string().required().label("Date of Birth"),
+  mobileNo: Yup.string()
+    .required()
+    .matches(/^[6-9]\d{9}$/, "Mobile Number in India alone accepted")
+    .label("Mobile Number"),
   password: Yup.string()
     .required()
     .matches(
@@ -38,6 +43,8 @@ const Signup = () => {
         <CustomForm
           initialValues={{
             email: "",
+            dob: "",
+            mobileNo: "",
             password: "",
             confirmPassword: "",
           }}
@@ -45,6 +52,8 @@ const Signup = () => {
           onSubmit={handleSubmit}
         >
           <Input placeholder="Email" name="email" />
+          <Input placeholder="DOB" name="dob" type="date" />
+          <Input placeholder="Mobile Number" name="mobileNo" />
           <Input placeholder="Password" name="password" type="password" />
           <Input
             placeholder="Confirm Password"

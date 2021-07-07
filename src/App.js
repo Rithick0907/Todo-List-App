@@ -9,10 +9,12 @@ const App = () => {
     firebase.auth().signOut();
   };
   useEffect(() => {
-    const unSubscribe = async () =>
-      firebase.auth().onAuthStateChanged((user) => setUser(user));
+    const unSubscribe = firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+    });
+
     return () => unSubscribe();
-  });
+  }, []);
   return <Routes clearUser={clearUser} />;
 };
 
