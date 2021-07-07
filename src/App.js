@@ -1,15 +1,14 @@
 import { Login, Main, Signup } from "./pages";
 import { Redirect, Route, Switch } from "react-router-dom";
 import firebase, { addUserToDB } from "./service/firebase.utils";
-import { useEffect, useState } from "react";
 
 import UserContext from "./UserContext";
+import { useEffect } from "react";
 import useHttp from "./hooks/useHttp";
 
 const App = () => {
-  const [user, setUser] = useState("");
-
   const { sendRequest } = useHttp();
+  const user = localStorage.getItem("user");
 
   useEffect(() => {
     const unSubscribe = firebase.auth().onAuthStateChanged(async (userAuth) => {
@@ -17,7 +16,7 @@ const App = () => {
       if (userAuth) {
         currentUser = await addUserToDB(sendRequest, userAuth);
       }
-      setUser(currentUser);
+      localStorage.setItem("user", currentUser);
     });
 
     return () => unSubscribe();

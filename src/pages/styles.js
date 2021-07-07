@@ -25,7 +25,12 @@ export const StyledDiv = styled.div`
     text-align: center;
   }
 `;
-
+export const MainDiv = styled.div`
+  .navbar-nav > .btn {
+    text-decoration: none;
+    margin-right: 4rem;
+  }
+`;
 export const LoginStyles = styled(StyledDiv)``;
 
 export const SignupStyles = styled(StyledDiv)``;

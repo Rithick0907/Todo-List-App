@@ -33,9 +33,6 @@ const Login = ({ clearUser }) => {
   };
   return (
     <>
-      <Button variant="danger" onClick={() => firebase.auth().signOut()}>
-        Logout
-      </Button>
       <LoginStyles>
         <div className="item">
           <h1>Sign In</h1>

@@ -1,6 +1,8 @@
+import { Button, Nav, Navbar } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 
 import Card from "../components/Card";
+import { MainDiv } from "./styles";
 import TaskList from "../components/TaskList";
 import UserContext from "../UserContext";
 import { baseURL } from "../service/httpConfig";
@@ -10,6 +12,12 @@ const Main = () => {
   const [tasks, setTasks] = useState([]);
   const { id: userID } = useContext(UserContext);
   const { sendRequest } = useHttp();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    firebase.auth().signOut();
+    window.location = "/login";
+  };
 
   const applyTask = (data) => {
     const temp = [];
@@ -33,10 +41,20 @@ const Main = () => {
     console.log(data);
   }, [sendRequest]);
   return (
-    <>
+    <MainDiv>
+      <Navbar bg="dark" expand="sm">
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse className="justify-content-end" id="basic-navbar-nav">
+          <Nav>
+            <Button variant="outline-danger" onClick={handleLogout}>
+              Logout
+            </Button>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
       <Card />
       <TaskList tasks={tasks} />
-    </>
+    </MainDiv>
   );
 };
 
