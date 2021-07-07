@@ -15,7 +15,7 @@ const App = () => {
 
     return () => unSubscribe();
   }, []);
-  return <Routes clearUser={clearUser} />;
+  return <Routes clearUser={clearUser} currentUser={user} />;
 };
 
 export default App;

@@ -1,7 +1,7 @@
 import { Login, Main, Signup } from "./pages";
 import { Redirect, Route, Switch } from "react-router-dom";
 
-const CustomRoute = ({ clearUser }) => {
+const CustomRoute = ({ clearUser, currentUser }) => {
   return (
     <Switch>
       <Route path="/signup" component={Signup} />
@@ -9,7 +9,12 @@ const CustomRoute = ({ clearUser }) => {
         path="/login"
         render={(props) => <Login clearUser={clearUser} {...props} />}
       />
-      <Route path="/main" component={Main} />
+      <Route
+        path="/main"
+        render={(props) =>
+          currentUser ? <Main {...props} /> : <Redirect to="login" />
+        }
+      />
       <Redirect to="/login" />
     </Switch>
   );
