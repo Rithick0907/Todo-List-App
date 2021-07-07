@@ -6,6 +6,7 @@ import { MainDiv } from "./styles";
 import TaskList from "../components/TaskList";
 import UserContext from "../UserContext";
 import { baseURL } from "../service/httpConfig";
+import firebase from "../service/firebase.utils";
 import useHttp from "../hooks/useHttp";
 
 const Main = () => {
@@ -13,10 +14,14 @@ const Main = () => {
   const { id: userID } = useContext(UserContext);
   const { sendRequest } = useHttp();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    firebase.auth().signOut();
-    window.location = "/login";
+  const handleLogout = async () => {
+    try {
+      await firebase.auth().signOut();
+      localStorage.removeItem("user");
+      window.location = "/login";
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const applyTask = (data) => {
@@ -31,14 +36,14 @@ const Main = () => {
   };
 
   useEffect(() => {
-    const data = sendRequest(
-      {
+    const tempFunc = async () => {
+      const { data } = await sendRequest({
         method: "GET",
         url: `${baseURL}/users/${userID}/tasks.json`,
-      },
-      applyTask
-    );
-    console.log(data);
+      });
+      applyTask(data);
+    };
+    tempFunc();
   }, [sendRequest]);
   return (
     <MainDiv>

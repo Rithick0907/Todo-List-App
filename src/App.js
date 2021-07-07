@@ -16,6 +16,7 @@ const App = () => {
       if (userAuth) {
         currentUser = await addUserToDB(sendRequest, userAuth);
       }
+      console.log(currentUser);
       localStorage.setItem("user", currentUser);
     });
 
