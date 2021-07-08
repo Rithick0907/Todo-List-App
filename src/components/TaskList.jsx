@@ -7,7 +7,11 @@ const TaskList = ({ tasks }) => {
         {tasks.length === 0 ? (
           <div className="text-center text-bold">No tasks added yet</div>
         ) : (
-          tasks.map((task) => <div>{task}</div>)
+          <ol>
+            {tasks.map((task) => (
+              <li key={task.id}>{task.content[0]}</li>
+            ))}
+          </ol>
         )}
       </div>
     </StyledCard>

@@ -1,40 +1,30 @@
-import { Login, Main, Signup } from "./pages";
-import { Redirect, Route, Switch } from "react-router-dom";
 import firebase, { addUserToDB } from "./service/firebase.utils";
+import { useEffect, useState } from "react";
 
-import UserContext from "./UserContext";
-import { useEffect } from "react";
+import Routes from "./Routes";
+import UserContext from "./contexts/UserContext";
 import useHttp from "./hooks/useHttp";
 
 const App = () => {
+  const [user, setUser] = useState(localStorage.getItem("user"));
   const { sendRequest } = useHttp();
-  const user = localStorage.getItem("user");
 
   useEffect(() => {
     const unSubscribe = firebase.auth().onAuthStateChanged(async (userAuth) => {
-      let currentUser = null;
       if (userAuth) {
-        currentUser = await addUserToDB(sendRequest, userAuth);
+        let currentUser = await addUserToDB(sendRequest, userAuth);
+        currentUser = currentUser
+          ? localStorage.setItem("user", currentUser)
+          : localStorage.removeItem("user");
+        setUser(currentUser);
       }
-      console.log(currentUser);
-      localStorage.setItem("user", currentUser);
     });
 
     return () => unSubscribe();
   }, []);
   return (
     <UserContext.Provider value={user}>
-      <Switch>
-        <Route path="/signup" component={Signup} />
-        <Route path="/login" component={Login} />
-        <Route
-          path="/main"
-          render={(props) =>
-            user ? <Main {...props} /> : <Redirect to="login" />
-          }
-        />
-        <Redirect to="/login" />
-      </Switch>
+      <Routes />
     </UserContext.Provider>
   );
 };

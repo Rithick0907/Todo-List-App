@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import Card from "../components/Card";
 import { MainDiv } from "./styles";
 import TaskList from "../components/TaskList";
-import UserContext from "../UserContext";
+import UserContext from "../contexts/UserContext";
 import { baseURL } from "../service/httpConfig";
 import firebase from "../service/firebase.utils";
 import useHttp from "../hooks/useHttp";
@@ -14,6 +14,28 @@ const Main = () => {
   const { id: userID } = useContext(UserContext);
   const { sendRequest } = useHttp();
 
+  const applyTask = (data) => {
+    if (!data.hasOwnProperty("tasks")) return;
+    const temp = [];
+    for (const key in data.tasks) {
+      temp.push({ id: key, content: data.tasks[key] });
+    }
+    setTasks(temp);
+  };
+
+  const handleSubmit = async ({ task }) => {
+    let temp = [task];
+    const response = await sendRequest({
+      url: `${baseURL}/users/${userID}/tasks.json`,
+      method: "POST",
+      data: temp,
+    });
+    const { data } = await sendRequest({
+      url: `${baseURL}/users/${userID}/tasks.json`,
+      method: "GET",
+    });
+    if (data) applyTask(data);
+  };
   const handleLogout = async () => {
     try {
       await firebase.auth().signOut();
@@ -24,27 +46,17 @@ const Main = () => {
     }
   };
 
-  const applyTask = (data) => {
-    const temp = [];
-    for (const key in data) {
-      temp.push({
-        id: key,
-        ...data[key],
-      });
-    }
-    setTasks(temp);
-  };
-
   useEffect(() => {
     const tempFunc = async () => {
       const { data } = await sendRequest({
         method: "GET",
-        url: `${baseURL}/users/${userID}/tasks.json`,
+        url: `${baseURL}/users/${userID}.json`,
       });
       applyTask(data);
     };
     tempFunc();
   }, [sendRequest]);
+
   return (
     <MainDiv>
       <Navbar bg="dark" expand="sm">
@@ -57,7 +69,7 @@ const Main = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      <Card />
+      <Card onSubmit={handleSubmit} />
       <TaskList tasks={tasks} />
     </MainDiv>
   );
