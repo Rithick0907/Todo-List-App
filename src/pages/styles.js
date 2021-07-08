@@ -1,5 +1,11 @@
 import styled from "styled-components";
 
+export const LoadingStyle = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  align-items: center;
+`;
 export const StyledDiv = styled.div`
   align-items: center;
   display: flex;

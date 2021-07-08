@@ -1,12 +1,13 @@
 import firebase, { addUserToDB } from "./service/firebase.utils";
 import { useEffect, useState } from "react";
 
+import Loading from "./pages/Loading";
 import Routes from "./Routes";
 import UserContext from "./contexts/UserContext";
 import useHttp from "./hooks/useHttp";
 
 const App = () => {
-  const [user, setUser] = useState(localStorage.getItem("user"));
+  /*const [user, setUser] = useState(localStorage.getItem("user"));
   const { sendRequest } = useHttp();
 
   useEffect(() => {
@@ -26,6 +27,12 @@ const App = () => {
     <UserContext.Provider value={user}>
       <Routes />
     </UserContext.Provider>
+  );*/
+
+  return (
+    <>
+      <Loading />
+    </>
   );
 };
 

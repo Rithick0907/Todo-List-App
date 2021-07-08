@@ -1,10 +1,13 @@
+import * as actions from "../apiAction";
+
 import axios from "axios";
 import { baseURL } from "../../service/httpConfig";
 
 const api = (store) => (next) => async (action) => {
-  if (action.type !== "apiCallBegin") return next(action);
+  if (action.type !== actions.apiCallBegan.type) return next(action);
 
-  const { url, method, data, onSuccess, onFailure } = action;
+  next(action);
+  const { url, method, data, onSuccess, onError } = action;
   const { dispatch } = store;
   try {
     const response = await axios.request({
@@ -15,7 +18,10 @@ const api = (store) => (next) => async (action) => {
     });
     dispatch({ type: onSuccess, payload: response.data });
   } catch (e) {
-    dispatch({ type: onFailure, payload: error });
+    //General Error Action
+    dispatch(actions.apiCallFailed(error));
+    //Specific Error Action
+    if (onError) dispatch({ type: onError, payload: error });
   }
 };
 export default api;

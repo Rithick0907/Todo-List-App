@@ -1,6 +1,6 @@
 import { persistReducer, persistStore } from "redux-persist";
 
-import api from "./middleware";
+import api from "./middleware/api";
 import { configureStore } from "@reduxjs/toolkit";
 import { getDefaultMiddleware } from "@reduxjs/toolkit";
 import rootReducer from "./reducer";
